@@ -1,0 +1,26 @@
+name: Commit message standards checks
+description: Check the integrity of commit messages against Space ROS project standards
+
+runs:
+  using: composite
+  steps:
+    - name: Un-shallow the git history so we can poke around in it
+      run: git fetch --unshallow
+      shell: bash
+
+    - name: Check that every commit name includes an issue reference like "#1"
+      run: |
+        set -eo pipefail
+        IFS=$'\n'
+        commits=$(git log --oneline origin/${{github.base_ref}}..origin/${{github.head_ref}})
+        for commit in $commits
+        do
+          if [[ $commit =~ ^.*#[0-9]+.*$ ]];
+          then
+            continue
+          else
+            echo "Found commit with no issue number: $commit"
+            exit 1
+          fi
+        done
+      shell: bash
