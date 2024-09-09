@@ -1,0 +1,12 @@
+name: Test this Action by running it against itself
+
+on:
+  pull_request:
+
+jobs:
+  run-itself:
+    runs-on: ubuntu-24.04
+    name: Check its own commit messages
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
